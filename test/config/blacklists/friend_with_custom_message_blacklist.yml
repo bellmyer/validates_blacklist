@@ -1,0 +1,11 @@
+name:
+ - Stinky Pete
+ - [Vanessa, is not allowed after ditching my b-day party]
+ 
+email:
+ - stinky_pete@gmail.com
+ - [/@aol\.com$/, is banned until they stop sending me CD\'s]
+ 
+age:
+ - < 14
+ - [\> 25, is too old and pervy!exit]

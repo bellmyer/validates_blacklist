@@ -1,0 +1,20 @@
+name:
+ - Stinky Pete
+ - /Pete/
+ - [Vanessa, is not allowed after ditching my b-day party]
+ - ['=~ /smurf/i', is not allowed to be a smurf!]
+ 
+email:
+ - stinky_pete@gmail.com
+ - [/@aol\.com$/, is banned until they stop sending me CD\'s]
+ 
+age:
+ - [< 14, is too young to party.]
+ - ['> 25', is too old and pervy!]
+
+net_worth:
+ - ['<= 50_000', is too poor.]
+ - ['>= 150_000', is too rich.]
+ 
+school:
+ - ['!~ /Valley/', is not Valley High School!]

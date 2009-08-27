@@ -120,7 +120,7 @@ The only limits are your imagination, and my forethought.  You can even specify
 the error message that is generated:
 
   email:
-   - [greasy_pete@aol.com, cannot be greasy pete from biology]
+   - [stinky_pete@aol.com, cannot be greasy pete from biology]
   
   age:
    - [>25, cannot be a pervert]
