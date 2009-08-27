@@ -2,6 +2,18 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
+require 'rubygems'
+require 'hoe'
+
+Hoe.new("ar_fixtures", '0.0.4') do |p|
+  p.summary     = "Creates test fixtures from data in the database."
+  p.description = "Methods for emitting existing data as Yaml fixtures."
+  p.author = 'Jaime Bellmyer'
+  p.email = 'jaime@kconrails.com'
+  p.url = 'http://github.com/bellmyer/validates_blacklist'
+  p.test_globs = [“test/*_test.rb”]
+end
+
 desc 'Default: run unit tests.'
 task :default => :test
 
