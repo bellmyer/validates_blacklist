@@ -157,3 +157,22 @@ class FriendWithAttributeMessageTest < Test::Unit::TestCase
     assert friend.errors.on(:email).include?('looks spammy')
   end
 end
+
+class FriendWithBlankBlacklist < Friend
+  validates_blacklist
+end
+
+class FriendWithBlankBlacklistTest < Test::Unit::TestCase
+  def setup
+    setup_db
+  end
+  
+  def teardown
+    teardown_db
+  end
+  
+  def test_should_not_fail
+    friend = FriendWithBlankBlacklist.new(:name => 'Stinky Pete')
+    assert friend.valid?
+  end
+end
