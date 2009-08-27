@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'validates_blacklist'
-  s.version = '0.1.3'
+  s.version = '0.1.4'
   s.date = '2009-08-26'
   
   s.summary = "Allows models to be validated against yaml-based blacklists"
@@ -15,7 +15,6 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = ["README"]
 
   s.add_dependency 'rails', ['>= 2.1']
-  s.add_dependency 'yaml'
   
    s.files = [
     "init.rb",
