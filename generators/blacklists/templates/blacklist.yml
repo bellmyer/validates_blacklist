@@ -1,0 +1,14 @@
+# Example for a User model with name, e-mail and age attributes
+#
+# name:
+#   - Stinky Pete
+#   - Patchy the Pirate
+#
+# email:
+#   - stinky_pete@gmail.com
+#   - /@aol.com$/
+#
+# age:
+#   - < 14
+#   - > 25
+
