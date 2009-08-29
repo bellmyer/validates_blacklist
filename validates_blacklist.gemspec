@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'validates_blacklist'
-  s.version = '0.1.6'
+  s.version = '0.1.7'
   s.date = '2009-08-26'
   
   s.summary = "Allows models to be validated against yaml-based blacklists"
