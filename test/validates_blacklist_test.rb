@@ -247,4 +247,18 @@ class FriendUpdateableTest < Test::Unit::TestCase
     list = FriendUpdateable.load_blacklist
     assert_equal 1, list['name'].select{|node| node.is_a?(Array) ? node.first == 'Vanessa' : node == 'Vanessa'}.size
   end
+  
+  def test_should_remove_an_existing_blacklist_item
+    FriendUpdateable.unblacklist(:name, 'Vanessa')
+
+    friend = FriendUpdateable.new(:name => 'Vanessa')
+    assert friend.valid?
+  end
+  
+  def test_should_ignore_removal_request_for_nonexisting_blacklist_item
+    FriendUpdateable.unblacklist(:name, 'Cookie Monster')
+
+    friend = FriendUpdateable.new(:name => 'Cookie Monster')
+    assert friend.valid?
+  end
 end

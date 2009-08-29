@@ -42,8 +42,12 @@ module Bellmyer
         save_blacklist
       end
       
-      def unblacklist
-        puts "Removed from blacklist."
+      def unblacklist(attribute, value)
+        attribute = attribute.to_s
+        
+        load_blacklist
+        self.blacklist_attributes[attribute].reject!{|a| a.is_a?(Array) ? a.first == value : a == value}
+        save_blacklist
       end
       
       def load_blacklist
