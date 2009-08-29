@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
     "test/config/blacklists/friend_with_blacklist_blacklist.yml",
     "test/config/blacklists/friend_with_blank_blacklist_blacklist.yml",
     "test/config/blacklists/friend_with_custom_message_blacklist.yml",
+    "test/config/blacklists/template.yml",
     "test/test_helper.rb",
     "test/validates_blacklist_test.rb"
   ]

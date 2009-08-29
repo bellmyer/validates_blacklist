@@ -11,6 +11,8 @@ module Bellmyer
       unless included_modules.include? InstanceMethods
         class_inheritable_accessor :options
         class_inheritable_accessor :model
+        class_inheritable_accessor :blacklist_file
+        class_inheritable_accessor :blacklist_attributes
         
         extend ClassMethods
         include InstanceMethods
@@ -20,16 +22,36 @@ module Bellmyer
       end
       
       self.options = options
-        self.model = self.to_s.underscore
+      self.model = self.to_s.underscore
+      self.blacklist_file = "#{RAILS_ROOT}/config/blacklists/#{self.to_s.underscore}_blacklist.yml"
     end
     
     module ClassMethods
-      def blacklist
-        puts "blacklisted!"
+      def blacklist(attribute, value, message = nil)
+        attribute = attribute.to_s
+
+        load_blacklist
+        self.blacklist_attributes[attribute] ||= []
+        if message.nil?
+          self.blacklist_attributes[attribute].reject!{|a| a.is_a?(Array) ? a.first == value : a == value}
+          self.blacklist_attributes[attribute] << value
+        else
+          self.blacklist_attributes[attribute].reject!{|a| a.is_a?(Array) ? a.first == value : a == value}
+          self.blacklist_attributes[attribute] << [value, message]
+        end
+        save_blacklist
       end
       
       def unblacklist
         puts "Removed from blacklist."
+      end
+      
+      def load_blacklist
+        self.blacklist_attributes = YAML.load_file(self.blacklist_file) || {}
+      end
+      
+      def save_blacklist
+        File.open(self.blacklist_file, 'w'){|f| YAML.dump(self.blacklist_attributes, f)}
       end
     end
     
@@ -39,10 +61,8 @@ module Bellmyer
       protected
       
       def model_blacklists
-        blacklist = "#{RAILS_ROOT}/config/blacklists/#{self.class.to_s.underscore}_blacklist.yml"
-        
         # Load blacklist #
-        if attributes = File.open(blacklist){|f| YAML::load(f)}
+        if attributes = self.class.load_blacklist
           # Cycle through attributes #
           attributes.each do |attribute, stops|
             attribute = attribute.to_sym

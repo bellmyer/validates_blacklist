@@ -1,8 +1,10 @@
 require 'test/unit'
 require 'rubygems'
 require 'active_record'
+require 'ftools'
+
 $:.unshift File.dirname(__FILE__) + '/../lib'
-require File.dirname(__FILE__) + '/../init'
+require File.dirname(__FILE__) + '/../lib/validates_blacklist'
  
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
  
@@ -174,5 +176,75 @@ class FriendWithBlankBlacklistTest < Test::Unit::TestCase
   def test_should_not_fail
     friend = FriendWithBlankBlacklist.new(:name => 'Stinky Pete')
     assert friend.valid?
+  end
+end
+
+class FriendUpdateable < Friend
+  validates_blacklist
+end
+
+class FriendUpdateableTest < Test::Unit::TestCase
+  def setup
+    setup_db
+    File.copy("#{RAILS_ROOT}/config/blacklists/template.yml", "#{RAILS_ROOT}/config/blacklists/friend_updateable_blacklist.yml")
+  end
+  
+  def teardown
+    teardown_db
+    File.unlink("#{RAILS_ROOT}/config/blacklists/friend_updateable_blacklist.yml")
+  end
+  
+  def test_should_add_a_new_blacklist_item_without_message
+    FriendUpdateable.blacklist(:name, 'terrible')
+    
+    friend = FriendUpdateable.new(:name => 'terrible')
+    assert !friend.valid?
+    assert friend.errors.invalid?(:name)
+    assert friend.errors.on(:name).include?('is not allowed.')
+  end
+  
+  def test_should_add_a_new_blacklist_item_with_message
+    FriendUpdateable.blacklist(:name, 'terrible', "is terrible.")
+
+    friend = FriendUpdateable.new(:name => 'terrible')
+    assert !friend.valid?
+    assert friend.errors.invalid?(:name)
+    assert friend.errors.on(:name).include?('is terrible.')
+  end
+  
+  def test_should_update_an_existing_blacklist_item_changing_message_without_adding_item
+    FriendUpdateable.blacklist(:name, 'Vanessa', "is terrible.")
+
+    friend = FriendUpdateable.new(:name => 'Vanessa')
+    assert !friend.valid?
+    assert friend.errors.invalid?(:name)
+    assert friend.errors.on(:name).include?('is terrible.')
+    
+    list = FriendUpdateable.load_blacklist
+    assert_equal 1, list['name'].select{|node| node.is_a?(Array) ? node.first == 'Vanessa' : node == 'Vanessa'}.size
+  end
+  
+  def test_should_update_an_existing_blacklist_item_adding_message_without_adding_item
+    FriendUpdateable.blacklist(:name, 'Stinky Pete', "is terrible.")
+
+    friend = FriendUpdateable.new(:name => 'Stinky Pete')
+    assert !friend.valid?
+    assert friend.errors.invalid?(:name)
+    assert friend.errors.on(:name).include?('is terrible.')
+    
+    list = FriendUpdateable.load_blacklist
+    assert_equal 1, list['name'].select{|node| node.is_a?(Array) ? node.first == 'Stinky Pete' : node == 'Stinky Pete'}.size
+  end
+  
+  def test_should_update_an_existing_blacklist_item_removing_message_without_adding_item
+    FriendUpdateable.blacklist(:name, 'Vanessa')
+
+    friend = FriendUpdateable.new(:name => 'Vanessa')
+    assert !friend.valid?
+    assert friend.errors.invalid?(:name)
+    assert friend.errors.on(:name).include?('is not allowed.')
+    
+    list = FriendUpdateable.load_blacklist
+    assert_equal 1, list['name'].select{|node| node.is_a?(Array) ? node.first == 'Vanessa' : node == 'Vanessa'}.size
   end
 end
